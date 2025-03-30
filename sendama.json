@@ -1,0 +1,12 @@
+{
+    "name": "break-out",
+    "description": "A 2D ASCII terminal game.",
+    "version": "1.0.0",
+    "main": "break-out.php",
+    "player": {
+        "screen": {
+            "width": 110,
+            "height": 30
+        }
+    }
+}
