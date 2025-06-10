@@ -6,6 +6,7 @@ use Sendama\Engine\Core\Behaviours\Behaviour;
 use Sendama\Engine\Core\Time;
 use Sendama\Engine\Core\Transform;
 use Sendama\Engine\Core\Vector2;
+use Sendama\Engine\Debug\Debug;
 use Sendama\Engine\Events\Interfaces\ObservableInterface;
 use Sendama\Engine\Events\Traits\ObservableTrait;
 use SendamaEngine\BreakOut\Events\GroundCollisionEvent;
@@ -32,10 +33,14 @@ class BallController extends Behaviour implements ObservableInterface
     // onStart is useful for initializing variables
   }
 
+  public function onFixedUpdate(): void
+  {
+    $this->move();
+  }
+
   public function onUpdate(): void
   {
     // onUpdate is called once per frame
-    $this->move();
   }
 
   protected function move(): void
@@ -71,6 +76,7 @@ class BallController extends Behaviour implements ObservableInterface
   public function setVelocity(Vector2 $velocity): void
   {
     $this->velocity = $velocity;
+    $this->getTransform()->translate($this->velocity);
   }
 
   /**
@@ -87,6 +93,7 @@ class BallController extends Behaviour implements ObservableInterface
   {
     $reflection = Vector2::reflect($this->velocity, $normal);
     $this->velocity = $reflection;
+    $this->getTransform()->translate($this->velocity);
   }
 
   public function launch(): void

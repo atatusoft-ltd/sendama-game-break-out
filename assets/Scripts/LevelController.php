@@ -7,6 +7,7 @@ use Sendama\Engine\Debug\Debug;
 use Sendama\Engine\Events\Interfaces\EventInterface;
 use Sendama\Engine\Events\Interfaces\ObservableInterface;
 use Sendama\Engine\Events\Interfaces\ObserverInterface;
+use Sendama\Engine\Exceptions\Scenes\SceneNotFoundException;
 use SendamaEngine\BreakOut\Events\LifeCountChangeEvent;
 
 class LevelController extends Behaviour implements ObserverInterface
@@ -21,6 +22,12 @@ class LevelController extends Behaviour implements ObserverInterface
     // onUpdate is called once per frame
   }
 
+  /**
+   * @param ObservableInterface $observable
+   * @param EventInterface $event
+   * @return void
+   * @throws SceneNotFoundException
+   */
   public function onNotify(ObservableInterface $observable, EventInterface $event): void
   {
     if ($event instanceof LifeCountChangeEvent) {

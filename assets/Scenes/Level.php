@@ -26,6 +26,7 @@ class Level extends AbstractScene implements ObserverInterface
 
   protected ?BallController $ballController = null;
   protected ?PaddleController $paddleController = null;
+  protected array $bricks = [];
 
   public function awake(): void
   {
@@ -37,7 +38,6 @@ class Level extends AbstractScene implements ObserverInterface
     $paddle = new GameObject('Paddle', 'paddle', position: Vector2::one());
     $ball = new GameObject('Ball', 'ball', position: Vector2::one());
     $ball->addComponent(BallController::class);
-    $bricks = $this->generateBricks($ball);
 
     // create gui elements
     $scoreLabel = new Label($this, '', new Vector2(3, 2), new Vector2(10, 1));
@@ -48,6 +48,7 @@ class Level extends AbstractScene implements ObserverInterface
     assert($ballController instanceof BallController);
     $this->prepareLevelManager($levelManager, $ballController);
     $this->prepareGUI($levelManager, $scoreLabel, $lifeCountLabel);
+    $this->bricks = $this->generateBricks($ball, $levelManager);
 
     // add the game objects to the scene
     $this->add($levelManager);
@@ -55,11 +56,21 @@ class Level extends AbstractScene implements ObserverInterface
     $this->add($ball);
     $this->add($lifeCountLabel);
 
-    foreach ($bricks as $brick) {
+    foreach ($this->bricks as $brick) {
       $this->add($brick);
     }
 
     $this->add($scoreLabel);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function load(): void
+  {
+    foreach ($this->bricks as $brick) {
+      $brick->activate();
+    }
   }
 
   protected function prepareLevelManager(GameObject $levelManager, BallController $ballController): void
@@ -81,8 +92,11 @@ class Level extends AbstractScene implements ObserverInterface
    *
    * @return GameObject[]
    */
-  public function generateBricks(GameObject $ball): array
+  public function generateBricks(GameObject $ball, GameObject $levelManager): array
   {
+    $scoreKeeper = $levelManager->getComponent(ScoreKeeper::class);
+    assert($scoreKeeper instanceof ScoreKeeper);
+
     $startingBrickRow = 4;
     $startingBrickColumn = 4;
 
@@ -102,6 +116,7 @@ class Level extends AbstractScene implements ObserverInterface
         $brickTexture = new Texture2D('Textures/brick.texture');
         $brick->setSpriteFromTexture($brickTexture, Vector2::zero(), new Vector2($brickLength, $brickHeight));
         $brickController = $brick->addComponent(BrickController::class);
+        $brickController->addObservers($scoreKeeper);
         $brickController->setBall($ball);
 
         $bricks[] = $brick;

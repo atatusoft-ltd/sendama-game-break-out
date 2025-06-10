@@ -8,8 +8,10 @@ use Sendama\Engine\Events\Interfaces\EventInterface;
 use Sendama\Engine\Events\Interfaces\ObservableInterface;
 use Sendama\Engine\Events\Interfaces\ObserverInterface;
 use Sendama\Engine\Events\Traits\ObservableTrait;
+use SendamaEngine\BreakOut\Events\BrickCollisionEvent;
 use SendamaEngine\BreakOut\Events\GroundCollisionEvent;
 use SendamaEngine\BreakOut\Events\LifeCountChangeEvent;
+use SendamaEngine\BreakOut\Events\ScoreChangeEvent;
 
 class ScoreKeeper extends Behaviour implements ObserverInterface, ObservableInterface
 {
@@ -41,6 +43,12 @@ class ScoreKeeper extends Behaviour implements ObserverInterface, ObservableInte
       $previousLifeCount = $this->lives;
       $this->lives--;
       $this->notify(new LifeCountChangeEvent($previousLifeCount, $this->lives));
+    }
+
+    if ($event instanceof BrickCollisionEvent) {
+      $previousScore = $this->score;
+      $this->score += $event->brickValue;
+      $this->notify(new ScoreChangeEvent($previousScore, $this->score));
     }
   }
 }
