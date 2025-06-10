@@ -13,8 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SendamaEngine\\BreakOut\\": "assets/",
-            "Sendama\\Engine\\": "/home/amasiye/development/php/games/engines/sendama/engine/src/"
+            "SendamaEngine\\BreakOut\\": "assets/"
         }
     },
     "config": {
